@@ -77,10 +77,13 @@ class SimpleTracker(nn.Module):
 
         return params, buffers_shared, buffers_unique_map[key]
 
-    def _reset_on_new(self, key: int):
+    def _reset_on_new(self, key: int) -> bool:
         if self.last_key != key:
             self.memory.reset()
             self.last_key = key
+
+            return True
+        return False
 
     @override
     def forward(self, x: TensorDict, n: int, key: int, frame: int) -> Tensor:
@@ -105,7 +108,6 @@ class SimpleTracker(nn.Module):
         """
 
         key, frame = _maybe_read_item(int, key, frame)
-
         self._reset_on_new(key)
 
         state_ctx, state_obs = self.memory.read(frame)
