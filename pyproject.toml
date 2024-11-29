@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unitrack"
+description = "Toolkit for object tracking in computer vision applications."
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = [
+    "ai",
+    "computer vision",
+    "deep learning",
+]
+authors = [{ name = "Kurt Stolle", email = "k.h.w.stolle@gmail.com" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = ["unipercept"]
+
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "unitrack.__version__" }
+
+[project.entry-points.'unipercept.configs']
+unitrack = "unitrack.configs"
+
+[tool.setuptools.packages.find]
+where = ["sources"]
+include = ["unitrack"]
+namespaces = true
+
+[project.optional-dependencies]
+dev = [
+    "bandit[toml]",
+    "check-manifest",
+    "ruff",
+    "pre-commit",
+    "pygrep",
+    "isort >= 5.13.2",
+    "refurb",
+    "pylint >= 3.0.3",
+    "pylint_junit",
+    #"shellcheck-py",
+    #"pylint",
+    #"mypy >= 1.9.0",
+    "autoflake",
+    "pydocstyle",
+    #"pyre-check",
+    #"pydocstringformatter",
+    #"pyrefact",
+    #"pyflakes",
+    "mccabe",
+    "hypothesis >= 6.100.1",
+    "pytest >= 8.1.1",
+    "pytest-sugar",
+    "pytest-xdist",
+    "pytest-benchmark",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-runner",
+    "pytest-github-actions-annotate-failures",
+]
+
+[tool.pyright]
+include = ["sources"]
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+exclude = ["datasets", "dependencies", "output", "**/prototypes"]
+executionEnvironments = [{ root = "sources" }]
+
+[tool.ruff]
+target-version = 'py312'
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "F",    # flake8
+    "E",    # pycodestyle
+    "B",    # flake8-bugbear
+    "C",    # mccabe
+    "I",    # isort
+    "ARG",  # flake8-unused-arguments
+    "C4",   # flake8-comprehensions
+    "EM",   # flake8-errmsg
+    "ICN",  # flake8-import-conventions
+    "G",    # flake8-logging-format
+    "PGH",  # pygrep-hooks
+    "PIE",  # flake8-pie
+    "PL",   # pylint
+    "PT",   # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "T20",  # flake8-print
+    "UP",   # pyupgrade
+    "NPY",  # NumPy specific rules
+    "FURB", # refurb
+    "PYI",  # flake8-pyi
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"

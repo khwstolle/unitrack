@@ -24,9 +24,7 @@ Terminology
     or a previous frame.
 """
 
-from __future__ import annotations
-
-__version__ = "4.8.0"
+__version__ = "1.0.0"
 
 from . import assignment, consts, costs, debug, stages, states
 from ._memory import *
