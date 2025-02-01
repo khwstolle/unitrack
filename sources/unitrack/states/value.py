@@ -82,6 +82,8 @@ class Value(State):
             index.shape,
             memory.shape,
         )
+        if self.memory.is_floating_point():
+            memory = memory.type_as(self.memory)
         self._check_compatible(memory)
         self.memory[index] = memory
 
@@ -91,6 +93,8 @@ class Value(State):
             index.shape,
             memory.shape,
         )
+        if self.memory.is_floating_point():
+            memory = memory.type_as(self.memory)
         self._check_compatible(memory)
         self.memory[index] = memory
 

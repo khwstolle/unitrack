@@ -151,7 +151,7 @@ class GateCost(FieldCost):
         return Reduce([cost, self], Reduction.SUM)
 
 
-DEFAULT_EPS: T.Final = torch.finfo(torch.float32).eps
+DEFAULT_EPS: T.Final = 1e-5
 
 # ------------- #
 # Overlap costs #
@@ -210,7 +210,7 @@ def _pad_degenerate_boxes(boxes: torch.Tensor) -> torch.Tensor:
 
 
 def _box_diou_iou(
-    boxes1: torch.Tensor, boxes2: torch.Tensor, eps: float
+    boxes1: torch.Tensor, boxes2: torch.Tensor, eps: float, dtype=torch.float32
 ) -> T.Tuple[torch.Tensor, torch.Tensor]:
     """
     IoU with penalized center-distance
@@ -219,7 +219,7 @@ def _box_diou_iou(
     iou = box_iou(boxes1, boxes2)
     lti = torch.min(boxes1[:, None, :2], boxes2[:, :2])
     rbi = torch.max(boxes1[:, None, 2:], boxes2[:, 2:])
-    whi = (rbi - lti).float().clamp(min=0)  # [N,M,2]
+    whi = (rbi - lti).to(dtype=dtype).clamp(min=0)  # [N,M,2]
     diagonal_distance_squared = (whi[:, :, 0] ** 2) + (whi[:, :, 1] ** 2)
 
     # centers of boxes
@@ -229,8 +229,8 @@ def _box_diou_iou(
     y_g = (boxes2[:, 1] + boxes2[:, 3]) / 2
 
     # The distance between boxes' centers squared.
-    centers_distance_squared = (((x_p[:, None] - x_g[None, :])).float() ** 2) + (
-        ((y_p[:, None] - y_g[None, :])).float() ** 2
+    centers_distance_squared = ((x_p[:, None] - x_g[None, :]).float() ** 2) + (
+        (y_p[:, None] - y_g[None, :]).float() ** 2
     )
 
     # The distance IoU is the IoU penalized by a normalized
@@ -241,9 +241,11 @@ def _box_diou_iou(
     )
 
 
-def _complete_box_iou(boxes1: torch.Tensor, boxes2: torch.Tensor, eps) -> torch.Tensor:
-    boxes1 = boxes1.float()
-    boxes2 = boxes2.float()
+def _complete_box_iou(
+    boxes1: torch.Tensor, boxes2: torch.Tensor, eps, dtype: torch.dtype = torch.float32
+) -> torch.Tensor:
+    boxes1 = boxes1.to(dtype=dtype)
+    boxes2 = boxes2.to(dtype=dtype)
 
     diou, iou = _box_diou_iou(boxes1, boxes2, eps)
 
@@ -273,14 +275,20 @@ class Weighted(Cost):
     A weighted cost module.
     """
 
+    weight: torch.Tensor
+
     def __init__(self, cost: Cost, weight: float):
         super().__init__(required_fields=cost.required_fields)
 
         self.cost = cost
-        self.weight = weight
+        self.register_buffer(
+            "weight",
+            torch.as_tensor(weight, dtype=torch.float32, requires_grad=False),
+            persistent=True,
+        )
 
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
-        return self.weight * self.cost(cs, ds)
+        return self.weight * self.cost(cs, ds).type_as(self.weight)
 
 
 class Reduction(E.StrEnum):
