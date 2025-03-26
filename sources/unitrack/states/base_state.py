@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod
 import typing as T
 import torch
-from unipercept.types import Tensor
+from torch import Tensor
 
 __all__ = ["State", "StateValue", "DEFAULT_STATE_SLOTS"]
 
