@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import typing as T
 
-import torch
 from tensordict import TensorDictBase
 
 from ..consts import KEY_DELTA, KEY_FRAME

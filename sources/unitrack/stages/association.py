@@ -41,7 +41,7 @@ class Association(Stage):
     @TX.override
     def forward(
         self, ctx: TensorDictBase, cs: TensorDictBase, ds: TensorDictBase
-    ) -> T.Tuple[TensorDictBase, TensorDictBase]:
+    ) -> tuple[TensorDictBase, TensorDictBase]:
         if check_debug_enabled():
             print(
                 f"Associating {cs.batch_size[0]} candidates / "

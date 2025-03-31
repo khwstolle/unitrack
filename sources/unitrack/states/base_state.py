@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from abc import abstractmethod
 import typing as T
+from abc import abstractmethod
+
 import torch
 from torch import Tensor
 

@@ -7,13 +7,12 @@ A tracklet represents a generic collection of states, such as objects in a scene
 import typing as T
 
 import torch
-import torch.nn as nn
 from tensordict import TensorDict, TensorDictBase
-from torch import Tensor
+from torch import Tensor, nn
 
 from .consts import KEY_ACTIVE, KEY_DELTA, KEY_FRAME, KEY_ID, KEY_INDEX, KEY_START
 from .debug import check_debug_enabled
-from .states import State, DEFAULT_STATE_SLOTS
+from .states import DEFAULT_STATE_SLOTS, State
 from .states import Value as ValueState
 
 __all__ = ["TrackletMemory"]
@@ -63,7 +62,7 @@ class TrackletMemory(nn.Module):
         max_id: int = 2**15,
         max_lost: int = 1,
         auto_reset: bool = True,
-        fps: int | float = 15,
+        fps: float = 15,
         slots: int = DEFAULT_STATE_SLOTS,
     ):
         super().__init__()

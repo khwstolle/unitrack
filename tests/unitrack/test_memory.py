@@ -7,9 +7,8 @@ import typing as T
 
 import pytest
 import torch
-from tensordict import TensorDict
-
 import unitrack as ut
+from tensordict import TensorDict
 
 KEY_STATE_FLOAT: T.Final = "float_state"
 KEY_STATE_BOOL: T.Final = "bool_state"
@@ -92,7 +91,7 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     assert len(memory) == 5
 
     # Test that reading at negative frame indices raises an error when `auto_reset` is `False`
-    setattr(memory, "auto_reset", False)
+    memory.auto_reset = False
 
     assert memory.auto_reset is False
     with pytest.raises(IndexError, match="less than or equal to saved frame"):
@@ -102,7 +101,7 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     assert memory.write_count == 5
 
     # Test that reading at previous frames does not raise an error and resets the counter when `auto_reset` is `True`
-    setattr(memory, "auto_reset", True)
+    memory.auto_reset = True
 
     ctx, obs = memory.read(6)
 

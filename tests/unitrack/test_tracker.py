@@ -4,14 +4,10 @@ Tests for ``unitrack.tracker``.
 
 from __future__ import annotations
 
-from typing import cast
-
-import pytest
 import torch
 from tensordict import TensorDict
 from tensordict.nn import TensorDictModule
 from torch import nn
-
 from unitrack import (
     MultiStageTracker,
     TrackletMemory,
@@ -35,7 +31,7 @@ def test_tracker():
                 KEY_CATEGORY: torch.ones(1 + frame * 2, dtype=torch.long),
                 KEY_POSITION: (torch.arange(1 + frame * 2, dtype=dtype)).unsqueeze(1),
             }
-            for frame in range(0, 10)
+            for frame in range(10)
         ]
 
     trk = MultiStageTracker(

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing as T
 from abc import abstractmethod
-from typing import Iterable, List, Tuple
+from collections.abc import Iterable
 
 import torch
 import typing_extensions as TX
@@ -41,7 +41,7 @@ class Stage(torch.nn.Module):
         ctx: TensorDictBase,
         cs: TensorDictBase,
         ds: TensorDictBase,
-    ) -> Tuple[TensorDictBase, TensorDictBase]:
+    ) -> tuple[TensorDictBase, TensorDictBase]:
         raise NotImplementedError
 
     def match(self, cs: TensorDictBase, ds: TensorDictBase) -> None:
@@ -61,8 +61,8 @@ class Stage(torch.nn.Module):
                 f"{ds.batch_size[0]} detections"
             )
 
-        cs_keys = T.cast(T.List[str], cs.keys())
-        ds_keys = T.cast(T.List[str], ds.keys())
+        cs_keys = T.cast(list[str], cs.keys())
+        ds_keys = T.cast(list[str], ds.keys())
         for key in ds_keys:
             if key.startswith("_"):
                 continue

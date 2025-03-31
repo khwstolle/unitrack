@@ -4,14 +4,10 @@ Tests for ``unitrack.stages``.
 
 from __future__ import annotations
 
-from typing import cast
-
-import pytest
 import torch
 from hypothesis import given, settings
 from hypothesis import strategies as st
 from tensordict import TensorDict
-
 from unitrack import assignment, costs, stages
 
 

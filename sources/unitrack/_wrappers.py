@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import copy
 from collections import defaultdict
-from functools import cached_property
-from typing import TYPE_CHECKING, Mapping
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, override
 
 import torch
-import torch.nn as nn
 from tensordict import TensorDict, TensorDictBase
-from torch import Tensor
-from typing_extensions import override
+from torch import Tensor, nn
 
 if TYPE_CHECKING:
     from . import MultiStageTracker, TrackletMemory
@@ -144,9 +142,8 @@ class _MemoryReadWriter(nn.Module):
         if write:
             ctx, obs, new = transaction
             return self.memory.write(ctx, obs, new)
-        else:
-            (frame,) = transaction
-            return self.memory.read(frame)
+        (frame,) = transaction
+        return self.memory.read(frame)
 
 
 class StatefulTracker(nn.Module):

@@ -4,13 +4,11 @@ PyTorch implementation of the Hungarian algorithm for solving the assignment pro
 
 from __future__ import annotations
 
-from typing import Tuple
-
 import numpy as np
+import scipy.optimize
 import torch
 import torch.fx
 import typing_extensions as TX
-import scipy.optimize
 from torch import Tensor
 
 from ._base import Assignment
@@ -24,7 +22,7 @@ class Hungarian(Assignment):
     """
 
     @TX.override
-    def _assign(self, cost_matrix: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
+    def _assign(self, cost_matrix: Tensor) -> tuple[Tensor, Tensor, Tensor]:
         """
         Solves the assignment problem using the Hungarian algorithm.
 
@@ -42,7 +40,7 @@ class Hungarian(Assignment):
 
 def hungarian_assignment(
     cost_matrix: torch.Tensor,
-) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Perform linear assingment using the SciPy implementation
     """

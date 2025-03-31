@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import typing as T
-import typing_extensions as TX
 
 import torch
-import torch.nn as nn
+import typing_extensions as TX
 from tensordict import TensorDict, TensorDictBase
-from tensordict.nn import TensorDictModule, TensorDictModuleBase, TensorDictSequential
+from tensordict.nn import TensorDictModule
+from torch import nn
 
-from .consts import KEY_ACTIVE, KEY_FRAME, KEY_ID, KEY_INDEX, KEY_START
+from .consts import KEY_ACTIVE, KEY_INDEX
 from .debug import check_debug_enabled
 from .stages import Stage
 
@@ -23,14 +23,14 @@ class SelectField(nn.Module):
     def __init__(self, *keys: str, **keys_mapping: str):
         super().__init__()
 
-        self.in_keys = [k for k in keys] + [k for k in keys_mapping.keys()]
+        self.in_keys = [k for k in keys] + [k for k in keys_mapping]
         self.out_keys = [k for k in keys] + [v for v in keys_mapping.values()]
 
     @TX.override
     def forward(
         self, inp: TensorDictBase, tensordict_out: TensorDictBase
     ) -> TensorDictBase:
-        for key_in, key_out in zip(self.in_keys, self.out_keys):
+        for key_in, key_out in zip(self.in_keys, self.out_keys, strict=False):
             tensordict_out = tensordict_out.set(key_out, inp[key_in], inplace=True)
         return tensordict_out
 
@@ -54,7 +54,7 @@ class MultiStageTracker(nn.Module):
         obs: TensorDictBase,
         inp: TensorDictBase,
         num: int,
-    ) -> T.Tuple[TensorDictBase, TensorDictBase]:
+    ) -> tuple[TensorDictBase, TensorDictBase]:
         """
         Perform tracking, returns a tuple of updated observations and the field-values of new tracklets.
 

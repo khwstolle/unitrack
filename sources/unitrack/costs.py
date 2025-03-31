@@ -9,12 +9,11 @@ import enum as E
 import itertools
 import typing as T
 from abc import abstractmethod
-from re import I
 
 import torch
-import torch.nn as nn
 import typing_extensions as TX
 from tensordict import TensorDictBase
+from torch import nn
 from torchvision.ops import box_iou
 
 __all__ = []
@@ -61,7 +60,7 @@ class Cost(torch.nn.Module):
 
 class FieldCost(Cost):
     field: T.Final[str]
-    select: T.Final[T.List[int]]
+    select: T.Final[list[int]]
 
     def __init__(self, field: str, select: T.Iterable[int] | None = None):
         super().__init__(required_fields=[field])
@@ -75,7 +74,7 @@ class FieldCost(Cost):
 
     def get_field(
         self, cs: TensorDictBase, ds: TensorDictBase
-    ) -> T.Tuple[torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         ts_field = cs.get(self.field)
         ds_field = ds.get(self.field)
 
@@ -211,7 +210,7 @@ def _pad_degenerate_boxes(boxes: torch.Tensor) -> torch.Tensor:
 
 def _box_diou_iou(
     boxes1: torch.Tensor, boxes2: torch.Tensor, eps: float, dtype=torch.float32
-) -> T.Tuple[torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor]:
     """
     IoU with penalized center-distance
     """
@@ -308,14 +307,14 @@ class Reduce(Cost):
     A cost reduction module.
     """
 
-    weights: T.Final[T.List[float]]
+    weights: T.Final[list[float]]
     method: T.Final[method]
 
     def __init__(
         self,
         costs: T.Sequence[Cost],
         method: Reduction | str,
-        weights: T.Optional[T.Sequence[float]] = None,
+        weights: T.Sequence[float] | None = None,
     ):
         super().__init__(
             required_fields=itertools.chain(*(c.required_fields for c in costs))

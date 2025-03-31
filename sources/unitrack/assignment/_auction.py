@@ -40,14 +40,14 @@ class Auction(Assignment):
     @TX.override
     def _assign(
         self, cost_matrix: torch.Tensor
-    ) -> T.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         return auction_assignment(cost_matrix, self.bid_size)
 
 
 @torch.no_grad()
 def auction_assignment(
     cost_matrix: torch.Tensor, bid_size: float
-) -> T.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     cost_matrix = cost_matrix * -1  # Convert cost matrix to profit matrix
     cost_matrix = cost_matrix - cost_matrix.min()  # Normalize cost matrix
 

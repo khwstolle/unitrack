@@ -6,14 +6,13 @@ Defines fixtures and ensures testing data is present.
 
 from __future__ import annotations
 
-import os
 import typing as T
 from pathlib import Path
 
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def assets_path() -> Path:
     path = Path(__file__).parent.parent / "assets"
 
@@ -28,7 +27,7 @@ class SampleData(T.NamedTuple):
     segmentation_path: Path
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_data(assets_path: Path) -> list[SampleData]:
     depths_path: Path = assets_path / "depths"
     segmentations_path: Path = assets_path / "segmentations"

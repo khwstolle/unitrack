@@ -4,9 +4,9 @@ import abc
 import typing as T
 
 import torch
-import torch.nn as nn
 import typing_extensions as TX
 from tensordict import TensorDictBase
+from torch import nn
 
 from ..consts import KEY_INDEX
 from .base_stage import Stage
@@ -22,7 +22,7 @@ class GateModule(nn.Module):
     @TX.override
     def forward(
         self, ctx: TensorDictBase, cs: TensorDictBase, ds: TensorDictBase  # noqa: U100
-    ) -> T.Tuple[torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         raise NotImplementedError()
 
 
@@ -48,7 +48,7 @@ class Gate(Stage):
         ctx: TensorDictBase,
         cs: TensorDictBase,
         ds: TensorDictBase,
-    ) -> T.Tuple[TensorDictBase, TensorDictBase]:
+    ) -> tuple[TensorDictBase, TensorDictBase]:
         # Perform gating
         cs_mask, ds_mask = self.gate(ctx, cs, ds)
         cs_gated = cs._get_sub_tensordict(cs_mask)

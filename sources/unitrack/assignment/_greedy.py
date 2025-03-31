@@ -7,8 +7,6 @@ and simple to implement.
 
 from __future__ import annotations
 
-from typing import Tuple
-
 import torch
 import torch.fx
 
@@ -24,14 +22,14 @@ class Greedy(Assignment):
 
     def _assign(
         self, cost_matrix: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         return greedy_assignment(cost_matrix)
 
 
 @torch.no_grad()
 def greedy_assignment(
     cost_matrix: torch.Tensor,
-) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Performs a greedy assignment algorithm on a cost matrix, assigning pairs of elements (rows and columns) based on
     the minimum cost, with a threshold as the stopping condition.

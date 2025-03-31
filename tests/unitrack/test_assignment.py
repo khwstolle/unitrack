@@ -9,7 +9,6 @@ import time
 
 import pytest
 import torch
-
 from unitrack import assignment
 
 
@@ -66,7 +65,7 @@ def test_assignment_invoke(cost_matrix, solver):
     assert not any(c in matches[:, 1] for c in unmatch_cols)
 
 
-def generate_cost(size: int | float) -> tuple[torch.Tensor, torch.Tensor]:
+def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
     """
     Generate a random cost matrix and a random matching
     """

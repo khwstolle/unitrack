@@ -3,11 +3,11 @@ Implements memory that stores a Tensor value.
 """
 
 import typing as T
+
 import torch
+from unipercept.types import DType, Size, Tensor
 
-from .base_state import State, DEFAULT_STATE_SLOTS
-
-from unipercept.types import Size, Tensor, DType
+from .base_state import DEFAULT_STATE_SLOTS, State
 
 DTypeSpec: T.TypeAlias = DType | str
 
@@ -68,7 +68,7 @@ class Value(State):
 
     @T.override
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.memory.dtype}, shape={self.memory.shape}){{{self.memory.tolist()}}}"
+        return f"{self.__class__.__name__}({self.memory.dtype}, shape={self.memory.shape})"
 
     @T.override
     def read(self, index: Tensor) -> dict[str, Tensor]:
