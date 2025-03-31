@@ -38,9 +38,6 @@ coverage:
 build:
 	python -m build --wheel
 
-compile:
-	python -m pyc_wheel dist/iopathlib-*.whl --optimize 2
-
 dist: 
 	uv run twine check dist/*
 	uv run twine upload dist/*

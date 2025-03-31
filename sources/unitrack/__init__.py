@@ -24,7 +24,7 @@ Terminology
     or a previous frame.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from . import assignment, consts, costs, debug, stages, states
 from ._memory import *
