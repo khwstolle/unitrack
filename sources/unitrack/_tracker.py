@@ -3,9 +3,8 @@ from __future__ import annotations
 import typing as T
 
 import torch
-import typing_extensions as TX
 from tensordict import TensorDict, TensorDictBase
-from tensordict.nn import TensorDictModule
+from tensordict.nn import TensorDictModule, TensorDictModuleBase
 from torch import nn
 
 from .consts import KEY_ACTIVE, KEY_INDEX
@@ -15,24 +14,22 @@ from .stages import Stage
 __all__ = ["MultiStageTracker", "SelectField"]
 
 
-class SelectField(nn.Module):
+class SelectField(TensorDictModule):
     """
-    Select a field from a TensorDict.
+    Select fields from some input TensorDict and copy them to the output TensorDict.
     """
 
     def __init__(self, *keys: str, **keys_mapping: str):
-        super().__init__()
+        in_keys = []
+        in_keys.extend(keys)
+        in_keys.extend(keys_mapping.keys())
+        
+        out_keys = []
+        out_keys.extend(keys)
+        out_keys.extend(keys_mapping.values())
 
-        self.in_keys = [k for k in keys] + [k for k in keys_mapping]
-        self.out_keys = [k for k in keys] + [v for v in keys_mapping.values()]
+        super().__init__(lambda *args: args, in_keys=in_keys, out_keys=out_keys)
 
-    @TX.override
-    def forward(
-        self, inp: TensorDictBase, tensordict_out: TensorDictBase
-    ) -> TensorDictBase:
-        for key_in, key_out in zip(self.in_keys, self.out_keys, strict=False):
-            tensordict_out = tensordict_out.set(key_out, inp[key_in], inplace=True)
-        return tensordict_out
 
 
 class MultiStageTracker(nn.Module):
@@ -40,7 +37,7 @@ class MultiStageTracker(nn.Module):
     Multi-stage tracker that applies a cascade of stages to a set of detections.
     """
 
-    def __init__(self, fields: T.Sequence[TensorDictModule], stages: T.Sequence[Stage]):
+    def __init__(self, fields: T.Sequence[TensorDictModuleBase], stages: T.Sequence[Stage]):
         super().__init__()
 
         assert len(stages) > 0

@@ -98,6 +98,11 @@ select = [
     "FURB", # refurb
     "PYI",  # flake8-pyi
 ]
+ignore = [
+    "PLR2004",  # magic numbers
+    "PLW2901",  # for loop variable overwritten
+    "T201",  # print statement
+]
 
 [tool.ruff.format]
 docstring-code-format = true

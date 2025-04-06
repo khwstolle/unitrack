@@ -44,13 +44,38 @@ class SimpleTracker(nn.Module):
     buffers.
     """
 
-    def __init__(self, tracker: MultiStageTracker, memory: TrackletMemory):
+    def __init__(
+        self,
+        tracker: MultiStageTracker,
+        memory: TrackletMemory,
+        *,
+        device: torch.types.Device | None = "cpu",
+    ) -> None:
+        """
+        Parameters
+        ----------
+        tracker: MultiStageTracker
+            The tracker to be used.
+        memory: TrackletMemory
+            The memory to be used.
+        device: torch.types.Device
+            The device to be used for the tracker and memory. By default, all buffers
+            and parameters (if any) are moved to the CPU.
+        """
         super().__init__()
 
         self.tracker = tracker
         self.memory = memory
-
+        self.device = torch.device(device) if device is not None else None
         self.last_key = None
+
+    @override
+    def _apply(self, *args, **kwargs):
+        super()._apply(*args, **kwargs)
+
+        if self.device is not None:
+            self.memory = self.memory.to(self.device)
+            self.tracker = self.tracker.to(self.device)
 
     def read_storage(
         self, key: int
@@ -75,6 +100,7 @@ class SimpleTracker(nn.Module):
 
         return params, buffers_shared, buffers_unique_map[key]
 
+    @torch.compiler.disable()
     def _reset_on_new(self, key: int) -> bool:
         if self.last_key != key:
             self.memory.reset()

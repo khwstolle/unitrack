@@ -82,16 +82,3 @@ for frame, detections in enumerate(frames):
     print(f"Assigned tracklet IDs {ids.tolist()} @ frame {frame}")
 ```
 
-## Citation
-
-If you use this package in your research, please cite [our paper](https://arxiv.org/abs/2303.01991) as
-
-```bib
-@inproceedings{stolle2023unitrack,
-    title={Unified Perception: Efficient Depth-Aware Video Panoptic Segmentation with Minimal Annotation Costs},
-    author={Kurt Stolle and Gijs Dubbelman},
-    booktitle={IROS},
-    year={2023}
-}
-```
-
